@@ -1,0 +1,40 @@
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+  CONTAINER_IMAGE: "$CI_REGISTRY_USER/podzonereallocator"
+
+stages:
+  - build
+  - push
+
+.docker-in-docker:
+  image: docker:20.10.8
+  services:
+    - docker:20.10.8-dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
+
+build:
+  extends: .docker-in-docker
+  stage: build
+  script:
+    - docker build -t $CONTAINER_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker save $CONTAINER_IMAGE:$CI_COMMIT_SHORT_SHA -o docker-image.tar
+  artifacts:
+    paths:
+      - docker-image.tar
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    paths:
+      - cache/
+
+push:
+  extends: .docker-in-docker
+  stage: push
+  dependencies:
+    - build
+  script:
+    - docker load -i docker-image.tar
+    - docker tag $CONTAINER_IMAGE:$CI_COMMIT_SHORT_SHA $CONTAINER_IMAGE:latest
+    - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $CONTAINER_IMAGE:latest
