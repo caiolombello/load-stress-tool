@@ -6,7 +6,8 @@ import json
 from queue import Queue
 
 class LoadTester:
-    def __init__(self, url, auth_header, data, num_users, num_requests):
+    def __init__(self, method, url, auth_header, data, num_users, num_requests):
+        self.method = method.upper()
         self.url = url
         self.auth_header = auth_header
         self.data = data
@@ -20,11 +21,27 @@ class LoadTester:
     def make_request(self):
         headers = {
             'Content-Type': 'application/json',
-            'authorization': self.auth_header
         }
 
+        if self.auth_header:
+            headers['authorization'] = self.auth_header
+
         start_time = time.time()
-        response = requests.post(self.url, headers=headers, data=json.dumps(self.data))
+
+        if self.method == 'POST':
+            if self.data:
+                response = requests.post(self.url, headers=headers, data=json.dumps(self.data))
+            else:
+                response = requests.post(self.url, headers=headers)
+        elif self.method == 'GET':
+            response = requests.get(self.url, headers=headers)
+
+        # Verifique se data não está vazio antes de adicioná-lo
+        if self.data:
+            response = requests.post(self.url, headers=headers, data=json.dumps(self.data))
+        else:
+            response = requests.post(self.url, headers=headers)
+
         end_time = time.time()
 
         elapsed_time = end_time - start_time
@@ -78,6 +95,7 @@ class LoadTester:
         print(f"Taxa de sucesso: {success_rate:.2f}%")
 
 if __name__ == "__main__":
+    method = os.environ.get("METHOD") or input("Digite o método (GET ou POST): ")
     url = os.environ.get("URL") or input("Digite a URL: ")
     auth_header = os.environ.get("AUTH_HEADER") or input("Digite o cabeçalho de autorização: ")
     data_str = os.environ.get("DATA") or input("Digite os dados (JSON): ")
@@ -85,6 +103,6 @@ if __name__ == "__main__":
     num_users = int(os.environ.get("NUM_USERS") or input("Digite o número de usuários simultâneos: "))
     num_requests = int(os.environ.get("NUM_REQUESTS") or input("Digite o número de requisições por usuário: "))
 
-    load_tester = LoadTester(url, auth_header, data, num_users, num_requests)
+    load_tester = LoadTester(method, url, auth_header, data, num_users, num_requests)
     load_tester.run_test()
 
