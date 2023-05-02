@@ -9,6 +9,7 @@ stages:
   - push
 
 test:
+  image: python:3.9-slim
   stage: test
   script:
     - pip install -r requirements.txt
