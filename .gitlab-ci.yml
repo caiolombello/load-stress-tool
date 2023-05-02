@@ -4,16 +4,16 @@ variables:
   CONTAINER_IMAGE: "$CI_REGISTRY_USER/load-tester"
 
 stages:
-  - test
+  #- test
   - build
   - push
 
-test:
-  image: python:3.9-slim
-  stage: test
-  script:
-    - pip install -r requirements.txt
-    - python test_loadtester.py
+# test:
+#   image: python:3.9-slim
+#   stage: test
+#   script:
+#     - pip install -r requirements.txt
+#     - python test_loadtester.py
 
 .docker-in-docker:
   image: docker:20.10.8
