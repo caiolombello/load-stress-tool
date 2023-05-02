@@ -1,7 +1,7 @@
 variables:
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: "/certs"
-  CONTAINER_IMAGE: "$CI_REGISTRY_USER/podzonereallocator"
+  CONTAINER_IMAGE: "$CI_REGISTRY_USER/load-tester"
 
 stages:
   - build
