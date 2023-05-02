@@ -15,9 +15,9 @@ def test_loadtester():
 
     result = subprocess.run(["python", "LoadTester.py"], env=env, text=True, capture_output=True)
 
-    assert "Average Response Time" in result.stdout, "Average Response Time not found in the output"
-    assert "Success Rate" in result.stdout, "Success Rate not found in the output"
+    assert "Média de resposta" in result.stdout, "Média de resposta não encontrada na saída"
+    assert "Taxa de sucesso" in result.stdout, "Taxa de saída não encontrada na saída"
 
 if __name__ == "__main__":
     test_loadtester()
-    print("LoadTester test passed.")
+    print("LoadTester teste concluído com sucesso.")
