@@ -36,12 +36,6 @@ class LoadTester:
         elif self.method == 'GET':
             response = requests.get(self.url, headers=headers)
 
-        # Verifique se data não está vazio antes de adicioná-lo
-        if self.data:
-            response = requests.post(self.url, headers=headers, data=json.dumps(self.data))
-        else:
-            response = requests.post(self.url, headers=headers)
-
         end_time = time.time()
 
         elapsed_time = end_time - start_time
@@ -50,6 +44,7 @@ class LoadTester:
             self.total_count += 1
             if response.status_code == 200:
                 self.success_count += 1
+            print(f"[{self.method}] {self.url}")
             self.print_progress(response.status_code)
 
     def print_progress(self, status_code):
@@ -95,13 +90,34 @@ class LoadTester:
         print(f"Taxa de sucesso: {success_rate:.2f}%")
 
 if __name__ == "__main__":
-    method = os.environ.get("METHOD") or input("Digite o método (GET ou POST): ")
-    url = os.environ.get("URL") or input("Digite a URL: ")
-    auth_header = os.environ.get("AUTH_HEADER") or input("Digite o cabeçalho de autorização: ")
-    data_str = os.environ.get("DATA") or input("Digite os dados (JSON): ")
-    data = json.loads(data_str)
-    num_users = int(os.environ.get("NUM_USERS") or input("Digite o número de usuários simultâneos: "))
-    num_requests = int(os.environ.get("NUM_REQUESTS") or input("Digite o número de requisições por usuário: "))
+    method = os.environ.get("METHOD") or "null"
+    if method == "null":
+     method = input("Digite o método (GET ou POST): ")
+    
+    url = os.environ.get("URL") or "null"
+    if url == "null":
+     url = input("Digite a URL: ")
+
+    auth_header = os.environ.get("AUTH_HEADER") or "null"
+    if auth_header == "null":
+     auth_header = input("Digite o cabeçalho de autorização: ")
+
+    data_str = os.environ.get("DATA") or "null"
+    if data_str == "null":
+        data_str = input("Digite os dados (JSON): ")
+    data = json.loads(data_str) if data_str.strip() != "" else None
+    
+    num_users = os.environ.get("NUM_USERS")
+    if num_users is None:
+        num_users = int(input("Digite o número de usuários simultâneos: "))
+    else:
+        num_users = int(num_users)
+
+    num_requests = os.environ.get("NUM_REQUESTS")
+    if num_requests is None:
+        num_requests = int(input("Digite o número de requisições por usuário: "))
+    else:
+        num_requests = int(num_requests)
 
     load_tester = LoadTester(method, url, auth_header, data, num_users, num_requests)
     load_tester.run_test()
