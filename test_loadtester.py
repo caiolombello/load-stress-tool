@@ -1,5 +1,6 @@
 import os
 import subprocess
+import json
 
 def test_loadtester_get():
     url = "https://httpbin.org/get"
