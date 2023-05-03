@@ -25,8 +25,8 @@ stages:
 build:
   extends: .docker-in-docker
   stage: build
-  dependencies:
-    - test
+  # dependencies:
+  #   - test
   script:
     - docker build -t $CONTAINER_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker save $CONTAINER_IMAGE:$CI_COMMIT_SHORT_SHA -o docker-image.tar
