@@ -3,12 +3,16 @@ import subprocess
 
 def test_loadtester():
     url = "https://httpbin.org/get"
+    auth_header = "none"
     method = "GET"
+    data = "none"
     num_users = "1"
     num_requests = "1"
 
     env = os.environ.copy()
     env["URL"] = url
+    env["AUTH_HEADER"] = auth_header
+    env["DATA"] = data
     env["METHOD"] = method
     env["NUM_USERS"] = num_users
     env["NUM_REQUESTS"] = num_requests
