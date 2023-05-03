@@ -109,7 +109,7 @@ if __name__ == "__main__":
         data_str = input("Digite os dados (JSON): ")
     elif data_str == "none":
         data_str = None
-    data = json.loads(data_str) if data_str.strip() != "" else None
+    data = json.loads(data_str) if data_str is not None and data_str.strip() != "" else None
     
     num_users = os.environ.get("NUM_USERS")
     if num_users is None:
