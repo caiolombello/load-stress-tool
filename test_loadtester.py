@@ -19,9 +19,9 @@ def test_loadtester():
 
     result = subprocess.run(["python", "LoadTester.py"], env=env, text=True, capture_output=True)
 
+    print(result.stdout)
     assert "Média de resposta" in result.stdout, "Média de resposta não encontrada na saída"
     assert "Taxa de sucesso" in result.stdout, "Taxa de saída não encontrada na saída"
-    print(result.stdout)
     
 if __name__ == "__main__":
     test_loadtester()
