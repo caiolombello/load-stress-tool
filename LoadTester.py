@@ -101,13 +101,13 @@ if __name__ == "__main__":
     auth_header = os.environ.get("AUTH_HEADER") or "null"
     if auth_header == "null":
      auth_header = input("Digite o cabeçalho de autorização: ")
-    elif auth_header == "none"
+    elif auth_header == "none":
      auth_header = None
 
     data_str = os.environ.get("DATA") or "null"
     if data_str == "null":
         data_str = input("Digite os dados (JSON): ")
-    elif data_str == "none"
+    elif data_str == "none":
         data_str = None
     data = json.loads(data_str) if data_str.strip() != "" else None
     
