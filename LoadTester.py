@@ -44,13 +44,16 @@ class LoadTester:
             self.total_count += 1
             if response.status_code == 200:
                 self.success_count += 1
+            current_time = time.time()
+            elapsed_since_start = current_time - self.start_time
             print(f"[{self.method}] {self.url}")
-            self.print_progress(response.status_code)
+            self.print_progress(response.status_code, elapsed_since_start)
 
-    def print_progress(self, status_code):
+    def print_progress(self, status_code, elapsed_since_start):
         progress = self.total_count / (self.num_users * self.num_requests) * 100
         avg_response_time = sum(self.response_times) / len(self.response_times)
-        print(f"[{status_code}] Progresso: {progress:.2f}%, Oscilação média: {avg_response_time:.2f} segundos")
+        print(f"[{status_code}] Progresso: {progress:.2f}%, Oscilação média: {avg_response_time:.2f} segundos, Tempo percorrido: {elapsed_since_start:.2f} segundos")
+
 
     def worker(self, request_queue):
         while not request_queue.empty():
@@ -60,11 +63,11 @@ class LoadTester:
     def run_test(self):
         threads = []
         request_queue = Queue()
-        
+
         for _ in range(self.num_users * self.num_requests):
             request_queue.put(None)
 
-        start_time = time.time()
+        self.start_time = time.time()  # Change this line
         for _ in range(self.num_users):
             t = threading.Thread(target=self.worker, args=(request_queue,))
             threads.append(t)
@@ -74,7 +77,7 @@ class LoadTester:
             t.join()
         end_time = time.time()
 
-        self.elapsed_time = end_time - start_time
+        self.elapsed_time = end_time - self.start_time
         self.print_results()
 
     def print_results(self):
